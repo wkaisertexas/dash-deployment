@@ -234,6 +234,7 @@ external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(
     __name__, external_stylesheets=external_stylesheets
 )  # creates a dash app with the name __main__
+server = app.server  # required for deployment
 
 # final app layout
 app.layout = html.Div(
