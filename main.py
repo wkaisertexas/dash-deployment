@@ -161,14 +161,14 @@ selectors = html.Div(
 
 
 # creates a multi-line plot using the melted dataframe
-fig = px.line(
-    m_df,
-    x="year",
-    y="gdp_per_cap",
-    color="country",  # allows many lines to be put there
-    title="Gross Domestic Product Per Capita By Country and Year",
-)
-fig.show()
+# fig = px.line(
+#     m_df,
+#     x="year",
+#     y="gdp_per_cap",
+#     color="country",  # allows many lines to be put there
+#     title="Gross Domestic Product Per Capita By Country and Year",
+# )
+# fig.show()
 
 
 # # Integrating UI Components
