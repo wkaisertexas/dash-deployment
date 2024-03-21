@@ -5,4 +5,4 @@ plotly
 scikit_learn
 plotly
 gunicorn
-seaborne
+seaborn
