@@ -172,8 +172,6 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-colors = [ f"rgb({i}, {i}, {i})" for i in range(1, 256) ]
-
 @callback(
     Output(component_id="gdp-per-cap-line-graph", component_property="figure"),
     (Input(component_id="year-slider", component_property="value"), Input(component_id="country-dropdown", component_property="value"))
@@ -196,7 +194,7 @@ def update_graph(year_range: [int], countries: [str]):
                      "year": "Year",
                      "gdp_per_cap": "Gross Domestic Product (GDP) per Capita",
                      "country": "Country",
-                 },              color_discrete_sequence=colors,title="Gross Domestic Product Per Capita By Country and Year")
+                 }, title="Gross Domestic Product Per Capita By Country and Year")
     return fig
 
 app.layout = html.Div(layout, className='container')
