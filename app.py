@@ -1,6 +1,19 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+
+"""
+
+Note: if you are grading this, you should check out 
+
+assignment5_william_kaiser.ipynb  
+
+which is the jupyter notebook version of this code.
+
+The Python script created from the notebook is below.
+
+"""
+
 # ### Assignment #5: Callbacks
 # 
 # DS4003 | Spring 2024
@@ -40,11 +53,9 @@
 # In[14]:
 
 
+# imports 
 import pandas as pd
-import numpy as np
-import seaborn as sns
 from dash import dcc, html, Input, Output, callback
-from plotly import graph_objs as go
 import dash
 import plotly.express as px
 
@@ -54,6 +65,7 @@ import plotly.express as px
 # In[15]:
 
 
+# reading in the data
 df = pd.read_csv('gdp_pcap.csv')
 df.head()
 
@@ -61,13 +73,13 @@ df.head()
 # In[16]:
 
 
-df.info()
+df.info() # getting some basic info about the data
 
 
 # In[17]:
 
 
-df.describe()
+df.describe() # using the describe function to get averages
 
 
 # # Data Processing
@@ -79,10 +91,11 @@ df.describe()
 # In[18]:
 
 
+# using the melt function to get the data into the right format
 m_df = pd.melt(df, id_vars=['country'], var_name='year', value_name='gdp_per_cap')
 m_df['year'] = m_df['year'].astype(int)
 m_df['gdp_per_cap'] = m_df['gdp_per_cap'].replace({'k': '*1e3'}, regex=True).map(pd.eval).astype(float) # EVIL EVAL HACKS :-> I did not have to do this because I think plotly does it for you
-m_df
+m_df # showing the preview
 
 
 # # Making UI Components
@@ -90,6 +103,7 @@ m_df
 # In[19]:
 
 
+# making the number of countries
 num_countries = len(m_df['country'].unique())
 header = [
   html.H1('GDP Per Capita By Country and Year'),
@@ -100,7 +114,7 @@ header = [
 
 # In[20]:
 
-
+# creating a dropdown of countries
 country_dropdown = dcc.Dropdown(
   options=df['country'].unique().tolist(),
   multi=True,
@@ -108,6 +122,7 @@ country_dropdown = dcc.Dropdown(
   className='one-half column',
 )
 
+# creating a range slider with well-defined years
 year_slider = dcc.RangeSlider(
     m_df.year.min(),
     m_df.year.max(),
@@ -121,15 +136,21 @@ year_slider = dcc.RangeSlider(
     id='year-slider', 
     className='one-half column',
 )
+
+# country_dropdown  = html.Div([html.P("Country Selector"), country_dropdown], className='column')
+# year_slider = html.Div([html.P("Year Selector"), year_slider], className='column')
+
+labels = html.Div([html.Label("Country Selector"), html.Label("Year Selector")], className='row', style={'display': 'flex', 'justify-content': 'space-between'})
 # make the div a row
 selectors = html.Div([country_dropdown, year_slider], className='row') # note: we learned how to do this in class, but I am just using css
 
+selectors = html.Div([labels, selectors], className='container')
 
 # # Plotting the Data
 
 # In[21]:
 
-
+# making a simple plot to show the data inside the notebook
 fig = px.line(m_df, x="year", y="gdp_per_cap", color='country', title='Gross Domestic Product Per Capita By Country and Year')
 # fig.show()
 
@@ -154,18 +175,21 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
+colors = [ f"rgb({i}, {i}, {i})" for i in range(1, 256) ]
+
 @callback(
     Output(component_id="gdp-per-cap-line-graph", component_property="figure"),
     (Input(component_id="year-slider", component_property="value"), Input(component_id="country-dropdown", component_property="value"))
 )
 def update_graph(year_range: [int], countries: [str]):
 
-    if countries is None:
+    if countries is None: # Setting default values
         countries = m_df['country'].unique()
 
-    if year_range is None:
+    if year_range is None: # setting default values
         year_range = [m_df['year'].min(), m_df['year'].max()]
 
+    # making a map of valid countries
     countries_mask = m_df['country'].isin(countries)
     year_mask = m_df['year'].between(year_range[0], year_range[1])
 
@@ -175,7 +199,7 @@ def update_graph(year_range: [int], countries: [str]):
                      "year": "Year",
                      "gdp_per_cap": "Gross Domestic Product (GDP) per Capita",
                      "country": "Country",
-                 }, title="Gross Domestic Product Per Capita By Country and Year")
+                 },              color_discrete_sequence=colors,title="Gross Domestic Product Per Capita By Country and Year")
     return fig
 
 app.layout = html.Div(layout, className='container')
