@@ -137,11 +137,11 @@ year_slider = dcc.RangeSlider(
     className='one-half column',
 )
 
-labels = html.Div([html.Label("Country Selector"), html.Label("Year Range Selector")], className='row', style={'display': 'flex', 'justify-content': 'space-between'})
+# labels = html.Div([html.Label("Country Selector"), html.Label("Year Range Selector")], className='row', style={'display': 'flex', 'justify-content': 'space-between'})
 # make the div a row
 selectors = html.Div([country_dropdown, year_slider], className='row') # note: we learned how to do this in class, but I am just using css
 
-selectors = html.Div([labels, selectors], className='container')
+# selectors = html.Div([labels, selectors], className='container')
 
 # # Plotting the Data
 
